@@ -1,0 +1,2 @@
+0,password,name,date,phone,email
+102240324,kngan1234,Nguyen Thi Kim Ngan,22/04/2006,0944043457,kngan@gmail.com
