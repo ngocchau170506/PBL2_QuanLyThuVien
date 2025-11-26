@@ -278,10 +278,10 @@ void Utils::GetCurrentDate(char* buffer, size_t buffer_size)
 
     // Sử dụng sprintf để định dạng chuỗi YYYY-MM-DD
     // Ghi kết quả vào buffer. sprintf trả về số ký tự đã ghi (không kể '\0')
-    int written = sprintf(buffer, "%04d-%02d-%02d", 
-                          1900 + ltm->tm_year, // Năm tính từ 1900
-                          1 + ltm->tm_mon,    // Tháng tính từ 0
-                          ltm->tm_mday);      // Ngày trong tháng
+    int written = sprintf(buffer, "%02d/%02d/%04d", 
+                          ltm->tm_mday,
+                          1 + ltm->tm_mon,
+                          1900 + ltm->tm_year);      // Ngày trong tháng
 
     // Đảm bảo chuỗi kết thúc bằng null, mặc dù sprintf đã làm điều này
     if (written < buffer_size) {

@@ -10,6 +10,8 @@
 #include <cstdio>
 #include <sstream>
 #include <stdexcept>
+#include <iomanip>  
+#include <vector>   
 
 using namespace std;
 
@@ -24,6 +26,7 @@ private:
     void LoadBorrowedBooks();
     void SaveBorrowedBooks() const;
     int FindBorrowedBookIndex(int bookID) const;
+    vector<int> borrowedBookIDs;
 
 public:
     User();
@@ -34,11 +37,11 @@ public:
     const BorrowedItem *getBorrowedBooks() const { return borrowedBooks; }
 
     void Show() const override;
-    void ShowBorrowedBooks(const BookManager &bm) const;
     void LoadUserByID(const string &id);
     bool AskReturnToMenu();
     bool ReturnBook(int bookID);
     bool BorrowBook(int bookID);
+    void ShowBorrowedBooks(BookManager& bookManager);
 
     void Menu(UserManager &manager, BookManager &bm);
 };
@@ -47,7 +50,7 @@ const int MAX_STREAM_SIZE_MANUAL = 100;
 
 User::User() : Person()
 {
-    currentBorrowedCount = 0;
+    this->currentBorrowedCount = 0;
 }
 
 User::User(int id, const char n[], const char d[], const char p[], const char e[], const char pw[])
@@ -248,33 +251,77 @@ void User::LoadUserByID(const string &id)
     file.close();
 }
 
-void User::ShowBorrowedBooks(const BookManager &bm) const
+// void User::ShowBorrowedBooks(BookManager& bookManager)
+// {
+//     if (currentBorrowedCount == 0)
+//     {
+//         cout << "Ban hien khong muon cuon sach nao.\n";
+//         return;
+//     }
+
+//     cout << "\n===== DANH SACH SACH DANG MUON (" << currentBorrowedCount << " cuon) =====\n";
+
+//     for (int i = 0; i < currentBorrowedCount; ++i)
+//     {
+//         int bookID = borrowedBooks[i].getBookID();
+//         const Book *bookPtr = bm.GetBookByID(bookID);
+
+//         cout << "Sach thu " << i + 1 << " - ID: " << bookID << "\n";
+//         cout << "   Ngay muon: " << borrowedBooks[i].getBorrowDate() << "\n";
+
+//         if (bookPtr)
+//         {
+//             bookPtr->Show();
+//         }
+//         else
+//         {
+//             cout << "Loi: Khong tim thay chi tiet sach ID: " << bookID << " trong he thong.\n";
+//         }
+//     }
+// }
+// Trong file User.cpp
+
+void User::ShowBorrowedBooks(BookManager& bookManager)
 {
-    if (currentBorrowedCount == 0)
+    cout << "\n--- DANH SACH SACH DANG MUON CUA: " << this->getName() << " ---\n";
+
+    // 1. Kiểm tra dựa trên biến đếm currentBorrowedCount
+    if (currentBorrowedCount == 0) 
     {
-        cout << "Ban hien khong muon cuon sach nao.\n";
+        cout << "Hien tai nguoi dung nay khong muon cuon sach nao.\n";
         return;
     }
 
-    cout << "\n===== DANH SACH SACH DANG MUON (" << currentBorrowedCount << " cuon) =====\n";
+    // In tiêu đề bảng
+    cout << left << setw(10) << "ID Sach" 
+         << left << setw(40) << "Ten Sach" 
+         << left << setw(20) << "Ngay muon" << endl;
+    cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
 
-    for (int i = 0; i < currentBorrowedCount; ++i)
+    // 2. Duyệt Mảng từ 0 đến currentBorrowedCount
+    for (int i = 0; i < currentBorrowedCount; i++)
     {
-        int bookID = borrowedBooks[i].getBookID();
-        const Book *bookPtr = bm.GetBookByID(bookID);
+        // Lấy ID sách từ phần tử thứ i trong mảng
+        // (Giả sử class chứa thông tin mượn có hàm getBookID, vì bạn dùng setBookID ở trên)
+        int bookID = borrowedBooks[i].getBookID(); 
+        string borrowDate = borrowedBooks[i].getBorrowDate(); // Lấy ngày mượn nếu có hàm get
 
-        cout << "Sach thu " << i + 1 << " - ID: " << bookID << "\n";
-        cout << "   Ngay muon: " << borrowedBooks[i].getBorrowDate() << "\n";
+        // Tìm thông tin chi tiết sách
+        Book* book = bookManager.GetBookByID(bookID);
 
-        if (bookPtr)
-        {
-            bookPtr->Show();
+        cout << left << setw(10) << bookID;
+
+        if (book) {
+            cout << left << setw(40) << book->getTitle();
+            cout << left << setw(20) << borrowDate; // In ngày mượn
         }
-        else
-        {
-            cout << "Loi: Khong tim thay chi tiet sach ID: " << bookID << " trong he thong.\n";
+        else {
+            cout << left << setw(40) << "Sach da bi xoa khoi he thong";
+            cout << left << setw(20) << borrowDate;
         }
+        cout << endl;
     }
+    cout << setfill('-') << setw(70) << "-" << setfill(' ') << endl;
 }
 
 void User::Show() const

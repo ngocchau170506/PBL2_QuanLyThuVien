@@ -10,21 +10,17 @@
 
 using namespace std;
 
-// Khai báo chuyển tiếp (Forward Declarations)
-// Cần thiết vì Login chỉ dùng tham chiếu/con trỏ tới các lớp này.
 class UserManager; 
 class BookManager; 
 
 class Login
 {
 private:
-    // Thành viên tham chiếu để lưu trữ các đối tượng Manager chính
     UserManager& userManager;
     BookManager& bookManager;
     
-    string Trim(const string& str); // loại bỏ kí tự trống
+    string Trim(const string& str); 
 public:
-    // FIX: Hàm tạo yêu cầu 2 tham số, không còn hàm tạo mặc định
     Login(UserManager& um, BookManager& bm) : userManager(um), bookManager(bm) {}
     
     int CompareString(const char* s1, const char* s2) const;

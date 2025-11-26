@@ -21,6 +21,7 @@ private:
 
     bool IsUserIDExist(int id);
     bool IsValidStudentID(const char idStr[]);
+    
 public:
     UserManager();
     ~UserManager();
